@@ -97,10 +97,8 @@ class Player {
       player1.makeDamage(attack1);
       player2.makeDamage(attack2);
     } else if (player1.reflex) {
-      // TODO: 尚未確定反彈傷害是一併計算還是分開計算
       player2.makeDamage(attack1 + attack2);
     } else if (player2.reflex) {
-      // TODO: 同上
       player1.makeDamage(attack1 + attack2);
     } else {
       player1.makeDamage(attack2);
@@ -148,10 +146,15 @@ class Player {
     if (this.defenseRate == 0) {
       throw "defenseRate could not be 0";
     }
-    return Math.max(
+    damage = Math.max(
       Math.ceil(damage / this.defenseRate - this.defenseBonus),
       0
     );
+    // NOTE: 攻擊失誤
+    if (this.isBigMistake()) {
+      damage *= 2;
+    }
+    return damage;
   }
 
   makeDamage(damage) {
@@ -187,8 +190,7 @@ class Player {
 
   makeBigMistake() {
     this.attack = 0;
-    // NOTE: 所受傷雙倍 (不確定先計還是後計 目前是先計雙倍)
-    this.defenseRate /= 2;
+    // NOTE: 攻擊失誤傷害是算完防具減傷後才計算故搬遷至 calculateDamage
   }
   /**
    * @returns {Boolean}
