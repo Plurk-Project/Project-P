@@ -303,13 +303,13 @@ class Supporter extends Player {
 }
 
 function simulate(
-  round = 1,
+  times = 1,
   playerA = new Attacker(),
   playerB = new Attacker()
 ) {
   let aWin = 0,
     bWin = 0;
-  for (let i = 0; i < round; i++) {
+  for (let i = 0; i < times; i++) {
     playerA.initStatus(true);
     playerB.initStatus(true);
     do {
