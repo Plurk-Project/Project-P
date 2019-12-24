@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="columns">
+        <!-- Player A -->
+        <div class="column">
+          <h1 class="title">Player A</h1>
+          <form id="formA">
+            <div class="field">
+              <label class="label">Role</label>
+              <div class="control">
+                <div class="select">
+                  <select name="role">
+                    <option value="Attacker">Attacker</option>
+                    <option value="Defenser">Defenser</option>
+                    <option value="Supporter">Supporter</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Weapon</label>
+              <span>Dice 20 Bonus</span>
+              <div class="control">
+                <input
+                  name="dice20BonusNum"
+                  class="input"
+                  type="number"
+                  value="1"
+                />
+              </div>
+              <span>Attack Rate</span>
+              <div class="control">
+                <input
+                  name="attackRate"
+                  class="input"
+                  type="number"
+                  value="1"
+                  step="0.01"
+                />
+              </div>
+              <span>Attack Bonus</span>
+              <div>
+                <input
+                  name="attackBonus"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Armour</label>
+              <span>Defense Rate</span>
+              <div class="control">
+                <input
+                  name="defenseRate"
+                  class="input"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value="1"
+                />
+              </div>
+
+              <span>Defense Bonus</span>
+              <div>
+                <input
+                  name="defenseBonus"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Accessory</label>
+              <span>BZ Bonus</span>
+              <div>
+                <input
+                  name="bzBonusNum"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <hr />
+
+        <!-- Player B -->
+        <div class="column">
+          <h1 class="title">Player B</h1>
+          <form id="formB">
+            <div class="field">
+              <label class="label">Role</label>
+              <div class="control">
+                <div class="select">
+                  <select name="role">
+                    <option value="Attacker">Attacker</option>
+                    <option value="Defenser">Defenser</option>
+                    <option value="Supporter">Supporter</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Weapon</label>
+              <span>Dice 20 Bonus</span>
+              <div class="control">
+                <input
+                  name="dice20BonusNum"
+                  class="input"
+                  type="number"
+                  value="1"
+                />
+              </div>
+              <span>Attack Rate</span>
+              <div class="control">
+                <input
+                  name="attackRate"
+                  class="input"
+                  type="number"
+                  value="1"
+                  step="0.01"
+                />
+              </div>
+              <span>Attack Bonus</span>
+              <div>
+                <input
+                  name="attackBonus"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Armour</label>
+              <span>Defense Rate</span>
+              <div class="control">
+                <input
+                  name="defenseRate"
+                  class="input"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value="1"
+                />
+              </div>
+
+              <span>Defense Bonus</span>
+              <div>
+                <input
+                  name="defenseBonus"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Accessory</label>
+              <span>BZ Bonus</span>
+              <div>
+                <input
+                  name="bzBonusNum"
+                  class="input"
+                  type="number"
+                  value="0"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <span>
+        Round
+        <input id="round" class="input" type="number" value="1" min="0" />
+      </span>
+      <br />
+      <button class="button is-primary" onclick="run()">Submit</button>
+    </div>
+
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Battle Results</p>
+          <button
+            class="delete"
+            aria-label="close"
+            onclick="document.querySelector('.modal').classList.remove('is-active')"
+          ></button>
+        </header>
+        <section class="modal-card-body">
+          <p id="result" class="subtitle"></p>
+        </section>
+      </div>
+    </div>
+  </body>
+  <script src="serialize.min.js"></script>
+  <script src="p.js"></script>
+  <script>
+    function queryToObject(query) {
+      return JSON.parse(
+        '{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+        (key, value) => {
+          if (key !== "") {
+            value = decodeURIComponent(value);
+          }
+          if (!isNaN(value)) {
+            value = +value;
+          }
+          return value;
+        }
+      );
+    }
+    function run() {
+      let round = document.querySelector("#round").value;
+      let playerA = createPlayer(
+        queryToObject(serialize(document.querySelector("#formA")))
+      );
+      let playerB = createPlayer(
+        queryToObject(serialize(document.querySelector("#formA")))
+      );
+      let result = simulate(round, playerA, playerB);
+      showCard(result);
+    }
+
+    function createPlayer(obj) {
+      let role;
+      if (obj.role == "Attacker") {
+        role = Attacker;
+      } else if (obj.role == "Defenser") {
+        role = Defenser;
+      } else if (obj.role == "Supporter") {
+        role = Supporter;
+      }
+      return new role(
+        new Weapon(obj.dice20BonusNum, obj.attackRate, obj.attackBonus),
+        new Armour(obj.defenseRate, obj.defenseBonus),
+        new Accessory(obj.bzBonusNum)
+      );
+    }
+
+    function showCard(result) {
+      document.querySelector("#result").innerHTML = result;
+      document.querySelector(".modal").classList.add("is-active");
+    }
+  </script>
+</html>
