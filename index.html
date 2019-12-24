@@ -206,14 +206,14 @@
     </div>
 
     <div class="modal">
-      <div class="modal-background"></div>
+      <div class="modal-background" onclick="closeCard()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Battle Results</p>
           <button
             class="delete"
             aria-label="close"
-            onclick="document.querySelector('.modal').classList.remove('is-active')"
+            onclick="closeCard()"
           ></button>
         </header>
         <section class="modal-card-body">
@@ -265,6 +265,10 @@
         new Armour(obj.defenseRate, obj.defenseBonus),
         new Accessory(obj.bzBonusNum)
       );
+    }
+
+    function closeCard() {
+      document.querySelector(".modal").classList.remove("is-active");
     }
 
     function showCard(result) {
