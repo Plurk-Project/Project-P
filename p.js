@@ -56,7 +56,7 @@ class Player {
   initStatus(first = true) {
     this.attack = 0;
     this.attackRate = this.weapon.attackRate;
-    this.attackBonus = this.weapon.attackRate;
+    this.attackBonus = this.weapon.attackBonus;
     this.defenseRate = this.armour.defenseRate;
     this.defenseBonus = this.armour.defenseBonus;
     this.reflex = false;
@@ -347,6 +347,7 @@ function simulate(
 ) {
   let aWin = 0,
     bWin = 0;
+  // console.log(playerA, playerB);
   for (let i = 0; i < times; i++) {
     playerA.initStatus(true);
     playerB.initStatus(true);
