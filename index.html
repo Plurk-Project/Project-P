@@ -9,13 +9,47 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma-divider@0.2.0/dist/css/bulma-divider.min.css"
+    />
     <script
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
   </head>
   <body>
-    <div class="container">
+    <section class="section container">
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <label class="label control">
+            Round
+            <input
+              id="round"
+              class="input"
+              type="number"
+              value="1000"
+              min="0"
+            />
+          </label>
+        </div>
+        <div class="level-item has-text-centered">
+          <label class="checkbox">
+            <input type="checkbox" id="process" />
+            Show battle process
+            <span class="tag is-warning is-light">
+              Not suggest to enable when round bigger than ~
+              <strong>1</strong>
+            </span>
+          </label>
+        </div>
+        <div class="level-item has-text-centered">
+          <button class="button is-primary" onclick="run()">Submit</button>
+        </div>
+      </nav>
+
+      <div class="is-divider" data-content="Setting"></div>
+
       <div class="columns">
         <!-- Player A -->
         <div class="column">
@@ -112,7 +146,7 @@
           </form>
         </div>
 
-        <hr />
+        <div class="is-divider-vertical" data-content="VS"></div>
 
         <!-- Player B -->
         <div class="column">
@@ -209,21 +243,7 @@
           </form>
         </div>
       </div>
-      <label class="label">
-        Round
-        <input id="round" class="input" type="number" value="1000" min="0" />
-      </label>
-      <label class="checkbox">
-        <input type="checkbox" id="process" />
-        Show battle process
-        <span class="tag is-warning is-light">
-          Not suggest to enable when round bigger than ~
-          <strong>1</strong>
-        </span>
-      </label>
-      <br />
-      <button class="button is-primary" onclick="run()">Submit</button>
-    </div>
+    </section>
 
     <div class="modal">
       <div class="modal-background" onclick="closeCard()"></div>
