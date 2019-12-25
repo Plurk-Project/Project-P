@@ -209,13 +209,17 @@
           </form>
         </div>
       </div>
-      <span>
+      <label class="label">
         Round
         <input id="round" class="input" type="number" value="1000" min="0" />
-      </span>
+      </label>
       <label class="checkbox">
         <input type="checkbox" id="process" />
         Show battle process
+        <span class="tag is-warning is-light">
+          Not suggest to enable when round bigger than ~
+          <strong>1</strong>
+        </span>
       </label>
       <br />
       <button class="button is-primary" onclick="run()">Submit</button>
