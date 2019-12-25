@@ -22,6 +22,12 @@
           <h1 class="title">Player A</h1>
           <form id="formA">
             <div class="field">
+              <label class="label">Name</label>
+              <div class="control">
+                <input class="input" name="name" />
+              </div>
+            </div>
+            <div class="field">
               <label class="label">Role</label>
               <div class="control">
                 <div class="select">
@@ -113,6 +119,12 @@
           <h1 class="title">Player B</h1>
           <form id="formB">
             <div class="field">
+              <label class="label">Name</label>
+              <div class="control">
+                <input class="input" name="name" />
+              </div>
+            </div>
+            <div class="field">
               <label class="label">Role</label>
               <div class="control">
                 <div class="select">
@@ -201,6 +213,10 @@
         Round
         <input id="round" class="input" type="number" value="1000" min="0" />
       </span>
+      <label class="checkbox">
+        <input type="checkbox" id="process" />
+        Show battle process
+      </label>
       <br />
       <button class="button is-primary" onclick="run()">Submit</button>
     </div>
@@ -232,7 +248,7 @@
           if (key !== "") {
             value = decodeURIComponent(value);
           }
-          if (!isNaN(value)) {
+          if (!isNaN(value) && value !== "") {
             value = +value;
           }
           return value;
@@ -240,6 +256,8 @@
       );
     }
     function run() {
+      clearCard();
+
       let round = document.querySelector("#round").value;
       let playerA = createPlayer(
         queryToObject(serialize(document.querySelector("#formA")))
@@ -247,7 +265,17 @@
       let playerB = createPlayer(
         queryToObject(serialize(document.querySelector("#formB")))
       );
-      let result = simulate(round, playerA, playerB);
+      let result;
+      if (document.querySelector("#process").checked) {
+        result = simulate(
+          round,
+          playerA,
+          playerB,
+          document.querySelector("#result")
+        );
+      } else {
+        result = simulate(round, playerA, playerB);
+      }
       showCard(result);
     }
 
@@ -261,6 +289,7 @@
         role = Supporter;
       }
       return new role(
+        obj.name,
         new Weapon(obj.dice20BonusNum, obj.attackRate, obj.attackBonus),
         new Armour(obj.defenseRate, obj.defenseBonus),
         new Accessory(obj.bzBonusNum)
@@ -271,8 +300,12 @@
       document.querySelector(".modal").classList.remove("is-active");
     }
 
+    function clearCard() {
+      document.querySelector("#result").innerHTML = "";
+    }
+
     function showCard(result) {
-      document.querySelector("#result").innerHTML = result;
+      document.querySelector("#result").innerHTML += "<br />" + result;
       document.querySelector(".modal").classList.add("is-active");
     }
   </script>

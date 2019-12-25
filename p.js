@@ -1,3 +1,7 @@
+class Util {
+  static arrSum = arr => arr.reduce((a, b) => a + b, 0);
+}
+
 class Plurk {
   static get bz() {
     return ["黑", "藍", "紅", "綠"];
@@ -7,12 +11,12 @@ class Plurk {
    * @param {Number} num quantity
    * @returns {Number}
    */
-  static getDice20(num = 1) {
-    let sum = 0;
+  static getDice20s(num = 1) {
+    let dice20s = [];
     for (let i = 0; i < num; i++) {
-      sum += Math.floor(20 * Math.random() + 1);
+      dice20s.push(Math.floor(20 * Math.random() + 1));
     }
-    return sum;
+    return dice20s;
   }
   /**
    * Get num bz
@@ -31,15 +35,18 @@ class Plurk {
 class Player {
   /**
    * Player constructor
+   * @param {String} name
    * @param {Weapon} weapon
    * @param {Armour} armour
    * @param {Accessory} accessory
    */
   constructor(
+    name = "",
     weapon = new Weapon(),
     armour = new Armour(),
     accessory = new Accessory()
   ) {
+    this.name = name;
     this.weapon = weapon;
     this.armour = armour;
     this.accessory = accessory;
@@ -68,62 +75,92 @@ class Player {
     // init status
     this.initStatus(false);
 
-    this.attack = Plurk.getDice20(1 + this.weapon.dice20BonusNum);
+    this.dice20s = Plurk.getDice20s(1 + this.weapon.dice20BonusNum);
+    // TODO: attack 計算搬去 calcAttack 裡面
+    this.attack = Util.arrSum(this.dice20s);
     this.bzs = Plurk.getBZs(3 + this.accessory.bzBonusNum);
+
     // check skill
+    let message = "Nothing!";
     if (this.canUseSkill()) {
+      message = "Use skill!";
       this.useSkill();
     } else if (this.canUseUltraSkill()) {
+      message = "Use ultra skill!";
       this.useUltraSkill();
     } else if (this.isSmallMistake()) {
+      message = "Make small mistake!";
       this.makeSmallMistake();
     } else if (this.isBigMistake()) {
+      message = "Make big mistake!";
       this.makeBigMistake();
     }
+    return { dice20s: this.dice20s, bzs: this.bzs, message };
   }
 
   /**
    * Attack each other
-   * @param {Player} player1
-   * @param {Player} player2
+   * @param {Player} playerA
+   * @param {Player} playerB
+   * @param {Object} TODO:
    */
-  static attackEachOther(player1, player2) {
+  static attackEachOther(playerA, playerB) {
     // TODO: 可以在 prepare 完後 return 使用技能的資訊在另外建一張表來計算 影響的數值
-    player1.prepare();
-    player2.prepare();
-    let attack1 = player1.calculateAttack();
-    let attack2 = player2.calculateAttack();
-    if (player1.reflex && player2.reflex) {
-      player1.makeDamage(attack1);
-      player2.makeDamage(attack2);
-    } else if (player1.reflex) {
-      player2.makeDamage(attack1 + attack2);
-    } else if (player2.reflex) {
-      player1.makeDamage(attack1 + attack2);
-    } else {
-      player1.makeDamage(attack2);
-      player2.makeDamage(attack1);
-    }
+    let statusA = playerA.prepare();
+    let statusB = playerB.prepare();
+
+    let attacks = this.calcAttacksAfterReflex(playerA, playerB);
+    let damages = [
+      playerA.calcDamage(attacks[0]),
+      playerB.calcDamage(attacks[1])
+    ];
+    playerA.makeDamage(damages[0]);
+    playerB.makeDamage(damages[1]);
 
     // check lock skill
-    Player.lockSkill(player1, player2);
+    Player.lockSkill(playerA, playerB);
+    return { statusA, statusB, attacks, damages };
   }
 
-  static lockSkill(player1, player2) {
-    if (player1.delayToLockSkill) {
-      player1.delayToLockSkill = false;
-
-      player2.skillLocked = true;
+  /**
+   *
+   * @param {Player} playerA
+   * @param {Player} playerB
+   * @returns {Array} [attackA, attackB]
+   */
+  static calcAttacksAfterReflex(playerA, playerB) {
+    let attackA = playerA.calcAttack();
+    let attackB = playerB.calcAttack();
+    if (playerA.reflex && playerB.reflex) {
+      return [attackA, attackB];
+    } else if (playerA.reflex) {
+      return [0, attackA + attackB];
+    } else if (playerB.reflex) {
+      return [attackA + attackB, 0];
     } else {
-      player2.skillLocked = false;
+      return [attackB, attackA];
     }
-    if (player2.delayToLockSkill) {
-      player2.delayToLockSkill = false;
+  }
 
-      player1.skillLocked = true;
+  static lockSkill(playerA, playerB) {
+    if (playerA.delayToLockSkill) {
+      playerA.delayToLockSkill = false;
+
+      playerB.skillLocked = true;
     } else {
-      player1.skillLocked = false;
+      playerB.skillLocked = false;
     }
+    if (playerB.delayToLockSkill) {
+      playerB.delayToLockSkill = false;
+
+      playerA.skillLocked = true;
+    } else {
+      playerA.skillLocked = false;
+    }
+  }
+
+  toString() {
+    return `${this.name} (${this.constructor.name})`;
   }
 
   getHp() {
@@ -133,7 +170,7 @@ class Player {
   /**
    * @returns {Number}
    */
-  calculateAttack() {
+  calcAttack() {
     return this.attack * this.attackRate + this.attackBonus;
   }
 
@@ -142,7 +179,7 @@ class Player {
    * @param {Number} damage
    * @returns {Number}
    */
-  calculateDamage(damage) {
+  calcDamage(damage) {
     if (this.defenseRate == 0) {
       throw "defenseRate could not be 0";
     }
@@ -158,7 +195,7 @@ class Player {
   }
 
   makeDamage(damage) {
-    this.hp -= this.calculateDamage(damage);
+    this.hp -= damage;
   }
 
   /**
@@ -190,7 +227,7 @@ class Player {
 
   makeBigMistake() {
     this.attack = 0;
-    // NOTE: 攻擊失誤傷害是算完防具減傷後才計算故搬遷至 calculateDamage
+    // NOTE: 攻擊失誤傷害是算完防具減傷後才計算故搬遷至 calcDamage
   }
   /**
    * @returns {Boolean}
@@ -250,8 +287,8 @@ class Accessory extends Item {
 
 /* Role */
 class Attacker extends Player {
-  constructor(weapon, armour, accessory) {
-    super(weapon, armour, accessory);
+  constructor(name = "", weapon, armour, accessory) {
+    super(name, weapon, armour, accessory);
     this.color = "紅";
   }
 
@@ -265,8 +302,8 @@ class Attacker extends Player {
 }
 
 class Defenser extends Player {
-  constructor(weapon, armour, accessory) {
-    super(weapon, armour, accessory);
+  constructor(name = "", weapon, armour, accessory) {
+    super(name, weapon, armour, accessory);
     this.color = "藍";
   }
 
@@ -280,8 +317,8 @@ class Defenser extends Player {
 }
 
 class Supporter extends Player {
-  constructor(weapon, armour, accessory) {
-    super(weapon, armour, accessory);
+  constructor(name, weapon, armour, accessory) {
+    super(name, weapon, armour, accessory);
     this.color = "黑";
   }
 
@@ -305,27 +342,52 @@ class Supporter extends Player {
 function simulate(
   times = 1,
   playerA = new Attacker(),
-  playerB = new Attacker()
+  playerB = new Attacker(),
+  element = undefined
 ) {
   let aWin = 0,
     bWin = 0;
   for (let i = 0; i < times; i++) {
     playerA.initStatus(true);
     playerB.initStatus(true);
+    let round = 0;
+    if (element !== undefined) {
+      element.innerHTML += "<br />=== Battle Start ===";
+    }
     do {
-      Player.attackEachOther(playerA, playerB);
-      // console.log(`A: ${playerA.getHp()} B: ${playerB.getHp()}`);
+      round++;
+      let battle = Player.attackEachOther(playerA, playerB);
+      if (element != undefined) {
+        element.innerHTML += `<br />~ Round ${round} ~`;
+        element.innerHTML += "<br />";
+        element.innerHTML += `<br />${playerA} ${battle.statusA.dice20s} ${battle.statusA.bzs}`;
+        element.innerHTML += `<br />${playerB} ${battle.statusB.dice20s} ${battle.statusB.bzs}`;
+        element.innerHTML += "<br />";
+        element.innerHTML += `<br />${playerA} use ${battle.statusA.message}`;
+        element.innerHTML += `<br />${playerB} use ${battle.statusB.message}`;
+        element.innerHTML += "<br />";
+        element.innerHTML += `<br />${playerA} attack ${battle.attacks[0]} damage!`;
+        element.innerHTML += `<br />${playerB} attack ${battle.attacks[1]} damage!`;
+        element.innerHTML += "<br />";
+        element.innerHTML += `<br />${playerA} get ${battle.damages[0]} damage!`;
+        element.innerHTML += `<br />${playerB} get ${battle.damages[1]} damage!`;
+        element.innerHTML += "<br />";
+        element.innerHTML += `<br />~ Round ${round} Summary ~`;
+        element.innerHTML += `<br />${playerA}: ${playerA.getHp()}`;
+        element.innerHTML += `<br />${playerB}: ${playerB.getHp()}`;
+      }
     } while (
       (playerA.getHp() > 0 && playerB.getHp() > 0) ||
       playerA.getHp() == playerB.getHp()
     );
+    if (element !== undefined) {
+      element.innerHTML += "<br />=== Battle End ===";
+    }
 
     if (playerA.getHp() > playerB.getHp()) {
       aWin += 1;
-      // console.log("A Win!");
     } else {
       bWin += 1;
-      // console.log("B Win!");
     }
     // console.log(`A: ${playerA.getHp()} B: ${playerB.getHp()}`);
   }
