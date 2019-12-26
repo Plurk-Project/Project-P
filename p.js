@@ -356,9 +356,9 @@ async function simulate(
     do {
       round++;
       let battle = Player.attackEachOther(playerA, playerB);
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(element, `<br />~ Round ${round} ~`);
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
         `<br />${playerA} ${battle.statusA.dice20s} ${battle.statusA.bzs}`
@@ -367,7 +367,7 @@ async function simulate(
         element,
         `<br />${playerB} ${battle.statusB.dice20s} ${battle.statusB.bzs}`
       );
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
         `<br />${playerA} do ${battle.statusA.message}`
@@ -376,7 +376,7 @@ async function simulate(
         element,
         `<br />${playerB} do ${battle.statusB.message}`
       );
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
         `<br />${playerA} attack ${battle.attacks[0]} damage!`
@@ -385,7 +385,7 @@ async function simulate(
         element,
         `<br />${playerB} attack ${battle.attacks[1]} damage!`
       );
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
         `<br />${playerA} get ${battle.damages[0]} damage!`
@@ -394,8 +394,9 @@ async function simulate(
         element,
         `<br />${playerB} get ${battle.damages[1]} damage!`
       );
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(element, `<br />~ Round ${round} Summary ~`);
+      appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
         `<br />${playerA}: ${playerA.getHp()}`
@@ -404,7 +405,7 @@ async function simulate(
         element,
         `<br />${playerB}: ${playerB.getHp()}`
       );
-      await appendAndScrollElem(element, "<br />");
+      appendAndScrollElem(element, "<br />");
     } while (
       (playerA.getHp() > 0 && playerB.getHp() > 0) ||
       playerA.getHp() == playerB.getHp()

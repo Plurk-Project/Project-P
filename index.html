@@ -33,23 +33,13 @@
         <div class="level-item has-text-centered">
           <label class="label control">
             Round
-            <input
-              id="round"
-              class="input"
-              type="number"
-              value="1000"
-              min="0"
-            />
+            <input id="round" class="input" type="number" value="10" min="0" />
           </label>
         </div>
         <div class="level-item has-text-centered">
           <label class="checkbox">
-            <input type="checkbox" id="process" />
-            Show battle process
-            <span class="tag is-warning is-light">
-              Not suggest to enable when round bigger than ~
-              <strong>1</strong>
-            </span>
+            <input type="checkbox" id="direct-display" />
+            Direct display win rate.
           </label>
         </div>
         <div class="level-item has-text-centered">
@@ -300,7 +290,7 @@
       );
       let result;
       showCard();
-      if (document.querySelector("#process").checked) {
+      if (document.querySelector("#direct-display")) {
         result = await simulate(
           round,
           playerA,
