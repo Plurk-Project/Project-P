@@ -30,23 +30,43 @@
   <body>
     <section class="section container">
       <nav class="level">
-        <div class="level-item has-text-centered">
-          <label class="label control">
-            Round
-            <input id="round" class="input" type="number" value="10" min="0" />
-          </label>
+        <!-- Level: Left -->
+        <div class="level-left">
+          <div class="level-item has-text-centered">
+            <label class="label control">
+              Round
+              <input
+                id="round"
+                class="input"
+                type="number"
+                value="10"
+                min="0"
+              />
+            </label>
+          </div>
+          <div class="level-item has-text-centered">
+            <label class="checkbox">
+              <input type="checkbox" id="direct-display" />
+              Direct display win rate.
+            </label>
+          </div>
         </div>
-        <div class="level-item has-text-centered">
-          <label class="checkbox">
-            <input type="checkbox" id="direct-display" />
-            Direct display win rate.
-          </label>
-        </div>
-        <div class="level-item has-text-centered">
-          <button class="button is-primary" onclick="run()">Submit</button>
-        </div>
-        <div class="level-item has-text-centered">
-          <button class="button is-info" onclick="showCard()">Show</button>
+
+        <!-- Level: Right -->
+        <div class="level-right">
+          <div class="level-item has-text-centered">
+            <button class="button is-primary" onclick="run()" id="simulate">
+              Simulate
+            </button>
+          </div>
+          <div class="level-item has-text-centered">
+            <button class="button is-info" onclick="showCard()">Show</button>
+          </div>
+          <div class="level-item has-text-centered">
+            <button class="button is-danger" onclick="window.location.reload()">
+              Reset
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -251,7 +271,15 @@
       <div class="modal-background" onclick="closeCard()"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Battle Results</p>
+          <p class="modal-card-title">
+            Battle Results
+            <button id="loading-status" class="button is-small is-success">
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+            </button>
+          </p>
+
           <button
             class="delete"
             aria-label="close"
@@ -281,8 +309,10 @@
         }
       );
     }
-    async function run() {
+    function run() {
       clearCard();
+      loading();
+      document.querySelector("#simulate").disabled = true;
 
       let round = document.querySelector("#round").value;
       let playerA = createPlayer(
@@ -293,17 +323,21 @@
       );
       let result;
       showCard();
-      if (document.querySelector("#direct-display")) {
-        result = await simulate(
-          round,
-          playerA,
-          playerB,
-          document.querySelector("#result")
-        );
-      } else {
-        result = await simulate(round, playerA, playerB);
-      }
-      appendAndScroll("<br />" + result);
+      setTimeout(async () => {
+        if (!document.querySelector("#direct-display").checked) {
+          result = await simulate(
+            round,
+            playerA,
+            playerB,
+            document.querySelector("#result")
+          );
+        } else {
+          result = await simulate(round, playerA, playerB);
+        }
+        document.querySelector("#simulate").disabled = false;
+        appendAndScroll("<br />" + result);
+        loadingSuccess();
+      }, 0);
     }
 
     function createPlayer(obj) {
@@ -339,6 +373,18 @@
       let element = document.querySelector("#result");
       element.innerHTML += html;
       element.lastElementChild.scrollIntoView();
+    }
+
+    function loading() {
+      let elem = document.querySelector("#loading-status");
+      elem.classList.add("is-loading", "is-warning");
+      elem.classList.remove("is-success");
+    }
+
+    function loadingSuccess() {
+      let elem = document.querySelector("#loading-status");
+      elem.classList.add("is-success");
+      elem.classList.remove("is-loading", "is-warning");
     }
   </script>
 </html>
