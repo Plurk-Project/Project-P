@@ -4,6 +4,22 @@ class Util {
   }
 }
 
+class ProjectP {
+  static get roleImage() {
+    return {
+      Attacker:
+        "https://static.wixstatic.com/media/3ae3d1_e62b40bd6b544176a573054db0a07864~mv2.png/v1/fill/w_19,h_20,al_c,lg_1,q_80/Item__07.webp",
+      Defenser:
+        "https://static.wixstatic.com/media/3ae3d1_23060fcddd2a4ca28a12560143f655fd~mv2.png/v1/fill/w_19,h_20,al_c,lg_1,q_80/Item__25.webp",
+      Supporter:
+        "https://static.wixstatic.com/media/3ae3d1_25a789ad5f884d1a9a85068593600269~mv2.png/v1/fill/w_19,h_20,al_c,lg_1,q_80/Item__23.webp"
+    };
+  }
+  static getRoleImageSrc(role) {
+    return ProjectP.roleImage[role];
+  }
+}
+
 class Plurk {
   static get diceImage() {
     return {
@@ -40,12 +56,11 @@ class Plurk {
   }
 
   static getDiceImageSrc(num) {
-    console.log(this);
-    return this.diceImage[num];
+    return Plurk.diceImage[num];
   }
 
   static getBzzImageSrc(color) {
-    return this.bzzImage[color];
+    return Plurk.bzzImage[color];
   }
 
   static get bz() {
@@ -205,7 +220,9 @@ class Player {
   }
 
   toString() {
-    return `${this.name} (${this.constructor.name})`;
+    return `${this.name} (${imageTagBuilder(
+      ProjectP.getRoleImageSrc(this.constructor.name)
+    )})`;
   }
 
   getHp() {
@@ -409,20 +426,20 @@ async function simulate(
       await appendAndScrollElem(
         element,
         `<br />${playerA} ${battle.statusA.dice20s
-          .map(dice20 => Plurk.getDiceImageSrc(dice20))
+          .map(Plurk.getDiceImageSrc)
           .map(imageTagBuilder)
           .join("")} ${battle.statusA.bzzs
-          .map(bzz => Plurk.getBzzImageSrc(bzz))
+          .map(Plurk.getBzzImageSrc)
           .map(imageTagBuilder)
           .join("")}`
       );
       await appendAndScrollElem(
         element,
         `<br />${playerB} ${battle.statusB.dice20s
-          .map(dice20 => Plurk.getDiceImageSrc(dice20))
+          .map(Plurk.getDiceImageSrc)
           .map(imageTagBuilder)
           .join("")} ${battle.statusB.bzzs
-          .map(bzz => Plurk.getBzzImageSrc(bzz))
+          .map(Plurk.getBzzImageSrc)
           .map(imageTagBuilder)
           .join("")}`
       );
