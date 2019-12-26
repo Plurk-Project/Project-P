@@ -1,10 +1,55 @@
 class Util {
-  static arrSum = arr => arr.reduce((a, b) => a + b, 0);
+  static arrSum(arr) {
+    return arr.reduce((a, b) => a + b, 0);
+  }
 }
 
 class Plurk {
+  static get diceImage() {
+    return {
+      1: "https://s.plurk.com/a517007a048ca131f7f1d778d1af9684.png",
+      2: "https://s.plurk.com/27866de1cbed77d98cd8a886205c9dcb.png",
+      3: "https://s.plurk.com/1a5cc269b657e7a814aca8aba27fa64f.png",
+      4: "https://s.plurk.com/dcdec54c7152053492e01800b81e0e15.png",
+      5: "https://s.plurk.com/bdd7628d6c87271ac349c84a24b5f138.png",
+      6: "https://s.plurk.com/33203dae72cad566e2a140b531f802f2.png",
+      7: "https://s.plurk.com/ff94b39b3f0927042f8479fac0fd92d1.png",
+      8: "https://s.plurk.com/ad61d499e90390b525bcb1315e6f8e5c.png",
+      9: "https://s.plurk.com/d305cc0e3cdf2ec56e6c9baa7c684f4a.png",
+      10: "https://s.plurk.com/8f36fda06d7b86c7f612974b3ea52bdd.png",
+      11: "https://s.plurk.com/d305cc0e3cdf2ec56e6c9baa7c684f4a.png",
+      12: "https://s.plurk.com/3f8817112e4c988c89d8467e424f4feb.png",
+      13: "https://s.plurk.com/73ca275f83000a6ddf34f98ab8759acc.png",
+      14: "https://s.plurk.com/565fefd777bff763bf53bb2cf8f6f0f0.png",
+      15: "https://s.plurk.com/611615a7152225c461050a3569ea1a2d.png",
+      16: "https://s.plurk.com/1a33f859f00b5d98944892ee9333eb7c.png",
+      17: "https://s.plurk.com/eacfe781bac35c429c2d747f3fd1ba94.png",
+      18: "https://s.plurk.com/c7907086d6db450a140f5192baa88f37.png",
+      19: "https://s.plurk.com/cf737a26669f491dd38e534007ea5dc4.png",
+      20: "https://s.plurk.com/22ecc6bed8b99c6a111d5dbc65dc08fd.png"
+    };
+  }
+
+  static get bzzImage() {
+    return {
+      R: "https://s.plurk.com/129b757f2346a6e5ea782c79f0337ba9.png",
+      G: "https://s.plurk.com/5a2a63fa773e68797ec69a1303bfa3b9.png",
+      B: "https://s.plurk.com/e3481a0219283c49455d8af6012980ea.png",
+      K: "https://s.plurk.com/7bd4d66256fc805da4dd178b9fdbe3ce.png"
+    };
+  }
+
+  static getDiceImageSrc(num) {
+    console.log(this);
+    return this.diceImage[num];
+  }
+
+  static getBzzImageSrc(color) {
+    return this.bzzImage[color];
+  }
+
   static get bz() {
-    return ["黑", "藍", "紅", "綠"];
+    return ["R", "G", "B", "K"];
   }
   /**
    * Get sum of N dice 20
@@ -19,16 +64,16 @@ class Plurk {
     return dice20s;
   }
   /**
-   * Get num bz
+   * Get num bzz
    * @param {Number} num quantity
    * @returns {Array}
    */
-  static getBZs(num = 3) {
-    let bzs = [];
+  static getBzzs(num = 3) {
+    let bzzs = [];
     for (let i = 0; i < num; i++) {
-      bzs.push(this.bz[Math.floor(Math.random() * this.bz.length)]);
+      bzzs.push(this.bz[Math.floor(Math.random() * this.bz.length)]);
     }
-    return bzs;
+    return bzzs;
   }
 }
 
@@ -78,7 +123,7 @@ class Player {
     this.dice20s = Plurk.getDice20s(1 + this.weapon.dice20BonusNum);
     // TODO: attack 計算搬去 calcAttack 裡面
     this.attack = Util.arrSum(this.dice20s);
-    this.bzs = Plurk.getBZs(3 + this.accessory.bzBonusNum);
+    this.bzzs = Plurk.getBzzs(3 + this.accessory.bzBonusNum);
 
     // check skill
     let message = "Nothing!";
@@ -95,7 +140,7 @@ class Player {
       message = "Make big mistake!";
       this.makeBigMistake();
     }
-    return { dice20s: this.dice20s, bzs: this.bzs, message };
+    return { dice20s: this.dice20s, bzzs: this.bzzs, message };
   }
 
   /**
@@ -199,12 +244,12 @@ class Player {
   }
 
   /**
-   * Get count of BZs of specific color
-   * @param {String} color Default "綠" Type of bz "紅" "藍" "黑" "綠"
+   * Get count of Bzzs of specific color
+   * @param {String} color Default "G" Type of bzz "R" "G" "B" "K"
    * @returns {Number}
    */
-  getBZCount(color = "綠") {
-    return this.bzs.filter(bz => bz == color).length;
+  getBZCount(color = "G") {
+    return this.bzzs.filter(bzz => bzz == color).length;
   }
 
   /**
@@ -289,7 +334,7 @@ class Accessory extends Item {
 class Attacker extends Player {
   constructor(name = "", weapon, armour, accessory) {
     super(name, weapon, armour, accessory);
-    this.color = "紅";
+    this.color = "R";
   }
 
   useSkill() {
@@ -304,7 +349,7 @@ class Attacker extends Player {
 class Defenser extends Player {
   constructor(name = "", weapon, armour, accessory) {
     super(name, weapon, armour, accessory);
-    this.color = "藍";
+    this.color = "B";
   }
 
   useSkill() {
@@ -319,7 +364,7 @@ class Defenser extends Player {
 class Supporter extends Player {
   constructor(name, weapon, armour, accessory) {
     super(name, weapon, armour, accessory);
-    this.color = "黑";
+    this.color = "K";
   }
 
   fixOverHeal() {
@@ -338,6 +383,8 @@ class Supporter extends Player {
     this.fixOverHeal();
   }
 }
+
+/* Battle Logic */
 
 async function simulate(
   times = 1,
@@ -361,11 +408,23 @@ async function simulate(
       appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
-        `<br />${playerA} ${battle.statusA.dice20s} ${battle.statusA.bzs}`
+        `<br />${playerA} ${battle.statusA.dice20s
+          .map(dice20 => Plurk.getDiceImageSrc(dice20))
+          .map(imageTagBuilder)
+          .join("")} ${battle.statusA.bzzs
+          .map(bzz => Plurk.getBzzImageSrc(bzz))
+          .map(imageTagBuilder)
+          .join("")}`
       );
       await appendAndScrollElem(
         element,
-        `<br />${playerB} ${battle.statusB.dice20s} ${battle.statusB.bzs}`
+        `<br />${playerB} ${battle.statusB.dice20s
+          .map(dice20 => Plurk.getDiceImageSrc(dice20))
+          .map(imageTagBuilder)
+          .join("")} ${battle.statusB.bzzs
+          .map(bzz => Plurk.getBzzImageSrc(bzz))
+          .map(imageTagBuilder)
+          .join("")}`
       );
       appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
@@ -433,4 +492,8 @@ async function appendAndScrollElem(element, html) {
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function imageTagBuilder(src) {
+  return `<img src="${src}" />`;
 }
