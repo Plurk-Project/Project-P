@@ -34,9 +34,9 @@
         <div class="level-left">
           <div class="level-item has-text-centered">
             <label class="label control">
-              Round
+              Count
               <input
-                id="round"
+                id="count"
                 class="input"
                 type="number"
                 value="10"
@@ -314,7 +314,7 @@
       loading();
       document.querySelector("#simulate").disabled = true;
 
-      let round = document.querySelector("#round").value;
+      let count = document.querySelector("#count").value;
       let playerA = createPlayer(
         queryToObject(serialize(document.querySelector("#formA")))
       );
@@ -326,7 +326,7 @@
       setTimeout(async () => {
         if (!document.querySelector("#direct-display").checked) {
           result = await simulate(
-            round,
+            count,
             playerA,
             playerB,
             document.querySelector("#result")
