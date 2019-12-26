@@ -352,7 +352,7 @@ async function simulate(
     playerA.initStatus(true);
     playerB.initStatus(true);
     let round = 0;
-    await appendAndScrollElem(element, "<br />=== Battle Start ===");
+    await appendAndScrollElem(element, `<br />=== Battle ${i + 1} Start ===`);
     do {
       round++;
       let battle = Player.attackEachOther(playerA, playerB);
@@ -409,7 +409,7 @@ async function simulate(
       (playerA.getHp() > 0 && playerB.getHp() > 0) ||
       playerA.getHp() == playerB.getHp()
     );
-    await appendAndScrollElem(element, "<br />=== Battle End ===");
+    await appendAndScrollElem(element, `<br />=== Battle ${i + 1} End ===`);
 
     if (playerA.getHp() > playerB.getHp()) {
       aWin += 1;
