@@ -13,10 +13,19 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma-divider@0.2.0/dist/css/bulma-divider.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Noto+Serif+TC&display=swap"
+      rel="stylesheet"
+    />
     <script
       defer
       src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
     ></script>
+    <style>
+      * {
+        font-family: "Noto Serif TC", serif;
+      }
+    </style>
   </head>
   <body>
     <section class="section container">
@@ -279,7 +288,7 @@
         }
       );
     }
-    function run() {
+    async function run() {
       clearCard();
 
       let round = document.querySelector("#round").value;
@@ -290,17 +299,18 @@
         queryToObject(serialize(document.querySelector("#formB")))
       );
       let result;
+      showCard();
       if (document.querySelector("#process").checked) {
-        result = simulate(
+        result = await simulate(
           round,
           playerA,
           playerB,
           document.querySelector("#result")
         );
       } else {
-        result = simulate(round, playerA, playerB);
+        result = await simulate(round, playerA, playerB);
       }
-      showCard(result);
+      appendAndScroll("<br />" + result);
     }
 
     function createPlayer(obj) {
@@ -328,9 +338,14 @@
       document.querySelector("#result").innerHTML = "";
     }
 
-    function showCard(result) {
-      document.querySelector("#result").innerHTML += "<br />" + result;
+    function showCard() {
       document.querySelector(".modal").classList.add("is-active");
+    }
+
+    function appendAndScroll(html) {
+      let element = document.querySelector("#result");
+      element.innerHTML += html;
+      element.lastElementChild.scrollIntoView();
     }
   </script>
 </html>

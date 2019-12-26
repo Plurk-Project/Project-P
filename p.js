@@ -102,7 +102,7 @@ class Player {
    * Attack each other
    * @param {Player} playerA
    * @param {Player} playerB
-   * @param {Object} TODO:
+   * @param {Object}
    */
   static attackEachOther(playerA, playerB) {
     // TODO: 可以在 prepare 完後 return 使用技能的資訊在另外建一張表來計算 影響的數值
@@ -339,7 +339,7 @@ class Supporter extends Player {
   }
 }
 
-function simulate(
+async function simulate(
   times = 1,
   playerA = new Attacker(),
   playerB = new Attacker(),
@@ -352,38 +352,64 @@ function simulate(
     playerA.initStatus(true);
     playerB.initStatus(true);
     let round = 0;
-    if (element !== undefined) {
-      element.innerHTML += "<br />=== Battle Start ===";
-    }
+    await appendAndScrollElem(element, "<br />=== Battle Start ===");
     do {
       round++;
       let battle = Player.attackEachOther(playerA, playerB);
-      if (element != undefined) {
-        element.innerHTML += `<br />~ Round ${round} ~`;
-        element.innerHTML += "<br />";
-        element.innerHTML += `<br />${playerA} ${battle.statusA.dice20s} ${battle.statusA.bzs}`;
-        element.innerHTML += `<br />${playerB} ${battle.statusB.dice20s} ${battle.statusB.bzs}`;
-        element.innerHTML += "<br />";
-        element.innerHTML += `<br />${playerA} use ${battle.statusA.message}`;
-        element.innerHTML += `<br />${playerB} use ${battle.statusB.message}`;
-        element.innerHTML += "<br />";
-        element.innerHTML += `<br />${playerA} attack ${battle.attacks[0]} damage!`;
-        element.innerHTML += `<br />${playerB} attack ${battle.attacks[1]} damage!`;
-        element.innerHTML += "<br />";
-        element.innerHTML += `<br />${playerA} get ${battle.damages[0]} damage!`;
-        element.innerHTML += `<br />${playerB} get ${battle.damages[1]} damage!`;
-        element.innerHTML += "<br />";
-        element.innerHTML += `<br />~ Round ${round} Summary ~`;
-        element.innerHTML += `<br />${playerA}: ${playerA.getHp()}`;
-        element.innerHTML += `<br />${playerB}: ${playerB.getHp()}`;
-      }
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(element, `<br />~ Round ${round} ~`);
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(
+        element,
+        `<br />${playerA} ${battle.statusA.dice20s} ${battle.statusA.bzs}`
+      );
+      await appendAndScrollElem(
+        element,
+        `<br />${playerB} ${battle.statusB.dice20s} ${battle.statusB.bzs}`
+      );
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(
+        element,
+        `<br />${playerA} do ${battle.statusA.message}`
+      );
+      await appendAndScrollElem(
+        element,
+        `<br />${playerB} do ${battle.statusB.message}`
+      );
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(
+        element,
+        `<br />${playerA} attack ${battle.attacks[0]} damage!`
+      );
+      await appendAndScrollElem(
+        element,
+        `<br />${playerB} attack ${battle.attacks[1]} damage!`
+      );
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(
+        element,
+        `<br />${playerA} get ${battle.damages[0]} damage!`
+      );
+      await appendAndScrollElem(
+        element,
+        `<br />${playerB} get ${battle.damages[1]} damage!`
+      );
+      await appendAndScrollElem(element, "<br />");
+      await appendAndScrollElem(element, `<br />~ Round ${round} Summary ~`);
+      await appendAndScrollElem(
+        element,
+        `<br />${playerA}: ${playerA.getHp()}`
+      );
+      await appendAndScrollElem(
+        element,
+        `<br />${playerB}: ${playerB.getHp()}`
+      );
+      await appendAndScrollElem(element, "<br />");
     } while (
       (playerA.getHp() > 0 && playerB.getHp() > 0) ||
       playerA.getHp() == playerB.getHp()
     );
-    if (element !== undefined) {
-      element.innerHTML += "<br />=== Battle End ===";
-    }
+    await appendAndScrollElem(element, "<br />=== Battle End ===");
 
     if (playerA.getHp() > playerB.getHp()) {
       aWin += 1;
@@ -393,4 +419,17 @@ function simulate(
     // console.log(`A: ${playerA.getHp()} B: ${playerB.getHp()}`);
   }
   return `A Win: ${aWin}, B Win: ${bWin}`;
+}
+
+async function appendAndScrollElem(element, html) {
+  if (element === undefined) {
+    return;
+  }
+  element.innerHTML += html;
+  element.lastElementChild.scrollIntoView();
+  await sleep(1000);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
