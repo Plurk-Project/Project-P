@@ -475,11 +475,11 @@ async function simulate(
       appendAndScrollElem(element, "<br />");
       await appendAndScrollElem(
         element,
-        `<br />${playerA}: ${playerA.getHp()}`
+        `<br />${playerA}: HP = ${playerA.getHp()}`
       );
       await appendAndScrollElem(
         element,
-        `<br />${playerB}: ${playerB.getHp()}`
+        `<br />${playerB}: HP = ${playerB.getHp()}`
       );
       appendAndScrollElem(element, "<br />");
     } while (
