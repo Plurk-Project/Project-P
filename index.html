@@ -80,7 +80,7 @@
             <div class="field">
               <label class="label">Name</label>
               <div class="control">
-                <input class="input" name="name" />
+                <input class="input" name="name" value="Player A" />
               </div>
             </div>
             <div class="field">
@@ -177,7 +177,7 @@
             <div class="field">
               <label class="label">Name</label>
               <div class="control">
-                <input class="input" name="name" />
+                <input class="input" name="name" value="Player B" />
               </div>
             </div>
             <div class="field">
@@ -186,7 +186,7 @@
                 <div class="select">
                   <select name="role">
                     <option value="Attacker">Attacker</option>
-                    <option value="Defenser">Defenser</option>
+                    <option value="Defenser" selected>Defenser</option>
                     <option value="Supporter">Supporter</option>
                   </select>
                 </div>
@@ -300,7 +300,7 @@
         '{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
         (key, value) => {
           if (key !== "") {
-            value = decodeURIComponent(value);
+            value = decodeURIComponent(value.replace(/\+/g, " "));
           }
           if (!isNaN(value) && value !== "") {
             value = +value;
