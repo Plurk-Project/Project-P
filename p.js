@@ -2,6 +2,14 @@ class Util {
   static arrSum(arr) {
     return arr.reduce((a, b) => a + b, 0);
   }
+
+  static sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  static imageTagBuilder(src) {
+    return `<img src="${src}" />`;
+  }
 }
 
 class ProjectP {
@@ -171,8 +179,8 @@ class Player {
 
     let attacks = this.calcAttacksAfterReflex(playerA, playerB);
     let damages = [
-      playerA.calcDamage(attacks[0]),
-      playerB.calcDamage(attacks[1])
+      playerA.calcDamage(attacks[1]),
+      playerB.calcDamage(attacks[0])
     ];
     playerA.makeDamage(damages[0]);
     playerB.makeDamage(damages[1]);
@@ -186,19 +194,19 @@ class Player {
    *
    * @param {Player} playerA
    * @param {Player} playerB
-   * @returns {Array} [attackA, attackB]
+   * @returns {Array} the strength of attack [attackA, attackB]
    */
   static calcAttacksAfterReflex(playerA, playerB) {
     let attackA = playerA.calcAttack();
     let attackB = playerB.calcAttack();
     if (playerA.reflex && playerB.reflex) {
-      return [attackA, attackB];
-    } else if (playerA.reflex) {
-      return [0, attackA + attackB];
-    } else if (playerB.reflex) {
-      return [attackA + attackB, 0];
-    } else {
       return [attackB, attackA];
+    } else if (playerA.reflex) {
+      return [attackA + attackB, 0];
+    } else if (playerB.reflex) {
+      return [0, attackA + attackB];
+    } else {
+      return [attackA, attackB];
     }
   }
 
@@ -220,7 +228,7 @@ class Player {
   }
 
   toString() {
-    return `${this.name} (${imageTagBuilder(
+    return `${this.name} (${Util.imageTagBuilder(
       ProjectP.getRoleImageSrc(this.constructor.name)
     )})`;
   }
@@ -427,20 +435,20 @@ async function simulate(
         element,
         `<br />${playerA} ${battle.statusA.dice20s
           .map(Plurk.getDiceImageSrc)
-          .map(imageTagBuilder)
+          .map(Util.imageTagBuilder)
           .join("")} ${battle.statusA.bzzs
           .map(Plurk.getBzzImageSrc)
-          .map(imageTagBuilder)
+          .map(Util.imageTagBuilder)
           .join("")}`
       );
       await appendAndScrollElem(
         element,
         `<br />${playerB} ${battle.statusB.dice20s
           .map(Plurk.getDiceImageSrc)
-          .map(imageTagBuilder)
+          .map(Util.imageTagBuilder)
           .join("")} ${battle.statusB.bzzs
           .map(Plurk.getBzzImageSrc)
-          .map(imageTagBuilder)
+          .map(Util.imageTagBuilder)
           .join("")}`
       );
       appendAndScrollElem(element, "<br />");
@@ -504,7 +512,7 @@ async function appendAndScrollElem(element, html) {
   }
   element.innerHTML += html;
   element.lastElementChild.scrollIntoView();
-  await sleep(1000);
+  await Util.sleep(1000);
 }
 
 function sleep(ms) {
