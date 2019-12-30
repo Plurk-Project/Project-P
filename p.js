@@ -405,7 +405,7 @@ class Supporter extends Player {
 /* Battle Logic */
 
 async function simulate(
-  times = 1,
+  count = 1,
   playerA = new Attacker(),
   playerB = new Attacker(),
   element = undefined
@@ -413,7 +413,7 @@ async function simulate(
   let aWin = 0,
     bWin = 0;
   // console.log(playerA, playerB);
-  for (let i = 0; i < times; i++) {
+  for (let i = 0; i < count; i++) {
     playerA.initStatus(true);
     playerB.initStatus(true);
     let round = 0;
