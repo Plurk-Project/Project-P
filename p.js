@@ -144,7 +144,7 @@ class Player {
     this.initStatus(false);
 
     this.dice20s = Plurk.getDice20s(1 + this.weapon.dice20BonusNum);
-    // TODO: attack 計算搬去 calcAttack 裡面
+    // TODO: move attack calc to @method calcAttack
     this.attack = Util.arrSum(this.dice20s);
     this.bzzs = Plurk.getBzzs(3 + this.accessory.bzBonusNum);
 
@@ -173,7 +173,7 @@ class Player {
    * @param {Object}
    */
   static attackEachOther(playerA, playerB) {
-    // TODO: 可以在 prepare 完後 return 使用技能的資訊在另外建一張表來計算 影響的數值
+    // NOTE: 可以在 prepare 完後 return 使用技能的資訊在另外建一張表來計算 影響的數值
     let statusA = playerA.prepare();
     let statusB = playerB.prepare();
 
@@ -187,6 +187,7 @@ class Player {
 
     // check lock skill
     Player.lockSkill(playerA, playerB);
+    // TODO: arrange the object to { a: ~~~ , b: ~~~ }
     return { statusA, statusB, attacks, damages };
   }
 
