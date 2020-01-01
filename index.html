@@ -333,7 +333,7 @@
             document.querySelector("#result")
           );
         } else {
-          result = await simulate(round, playerA, playerB);
+          result = await simulate(count, playerA, playerB);
         }
         document.querySelector("#simulate").disabled = false;
         appendAndScroll("<br />" + result);
