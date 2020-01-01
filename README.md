@@ -4,7 +4,7 @@
 
 ### Core Features
 
-- [x] Character Name
+- [x] Character name
 - [x] Roles
 
 ### Simulator Features
@@ -22,8 +22,9 @@
 
 ### Core Featues
 
-- [ ] Consume Items
-- [ ] Items Bag
+- [ ] Consume items
+- [ ] Inventory
+- [ ] Custom skill name
 
 ### Simulator Featues
 
