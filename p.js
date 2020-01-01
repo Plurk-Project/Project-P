@@ -118,6 +118,7 @@ class Player {
     this.weapon = weapon;
     this.armour = armour;
     this.accessory = accessory;
+    this.inventory = []; // to store things
     this.initStatus();
   }
 
@@ -326,13 +327,27 @@ class Player {
   }
 }
 
-/* Item */
+/* Rarity */
 
-class Item {
-  constructor(name = "") {}
+const RARITY = {
+  COMMON: 1, // 一般
+  GOOD: 2, // 精良
+  RARE: 3, // 稀有
+  EPIC: 4, // 史詩
+  LEGENDARY: 5 // 傳說
+};
+
+/* Things */
+
+class Thing {
+  constructor(name = "") {
+    this.name = name;
+  }
 }
 
-class Weapon extends Item {
+class Equipment extends Thing {}
+
+class Weapon extends Equipment {
   constructor(dice20BonusNum = 0, attackRate = 1, attackBonus = 0) {
     super();
     this.dice20BonusNum = dice20BonusNum;
@@ -341,7 +356,7 @@ class Weapon extends Item {
   }
 }
 
-class Armour extends Item {
+class Armour extends Equipment {
   constructor(defenseRate = 1, defenseBonus = 0) {
     super();
     this.defenseRate = defenseRate;
@@ -349,16 +364,18 @@ class Armour extends Item {
   }
 }
 
-class Accessory extends Item {
+class Accessory extends Equipment {
   constructor(bzBonusNum = 0) {
     super();
     this.bzBonusNum = bzBonusNum;
   }
 }
 
+class Item extends Thing {}
+
 /* Role */
 class Attacker extends Player {
-  constructor(name = "", weapon, armour, accessory) {
+  constructor(name, weapon, armour, accessory) {
     super(name, weapon, armour, accessory);
     this.color = "R";
   }
@@ -373,7 +390,7 @@ class Attacker extends Player {
 }
 
 class Defenser extends Player {
-  constructor(name = "", weapon, armour, accessory) {
+  constructor(name, weapon, armour, accessory) {
     super(name, weapon, armour, accessory);
     this.color = "B";
   }
